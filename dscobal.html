@@ -108,6 +108,8 @@
     
   }
 
+  let point = (i,j) => [ x(i,j), y(i,j), z(i,j) ];
+
   let drawsphere = (svg) => {
 
     io = isNaN(io) ? 0 : io + radians(val('vel'));
@@ -125,15 +127,20 @@
       let k = i % 2 == 0 ? j : j + 0.5;
       let m = (i == lat_lines-1) ? (i + 0.99) : (i + 1);
       let points = [
-        [ x(i, k), y(i,k), z(i,k) ],
-        [ x(m, k), y(m, k), z(m,k) ],
-        [ x(m, k+1), y(m, k+1), z(m, k+1) ],
-        [ x(i, k+1), y(i, k+1), z(i, k+1) ]
+	point(i,k),
+	point(m,k),
+	point(m,k+0.5),
+	point(m,k+1),
+	point(i,k+1),
+	point(i,k+0.5)
       ].map(
           p => rz(radians(rotx))(ry(radians(roty))(rx(radians(rotz))(p)))
+      ).filter(
+      	p => p[2] > 0
       );
+
       // don't draw if z < 0 for all points
-      if (points.some(p => p[2] > 0)) {
+      if (points.length > 1) {
         svg.appendChild(
           path(
             color(i,j),
