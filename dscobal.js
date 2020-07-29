@@ -53,6 +53,23 @@ const CONFIGS = {
     color: "gray gray #444",
     wcolors:"10,black 1,#0f0 30,black 1,#0f0 10,black 1,#f00",
     stroke:"#666"
+  },
+  colabs: {
+    wvel:0.1,
+    wcx:500,
+    wcy:300,
+    wspokes:20,
+    vel:1,
+    lat_lines:15,
+    lon_lines:33,
+    stroke_width:2,
+    rrate:0.3,
+    rotx:-45,
+    roty:24,
+    rotz:35,
+    color:"#0d7998 #0f7862 #106452 #11866e #126e5c #17677c #1f88ab #26aae1 #76184f #871d58 #9c2420 #9f2064 #c43388 #cb393a #d96727 #e24c4c #e27a26 #ee6e6f #ef8721 #f79622",
+    wcolors:"1,#052049 3,#178ccb 15,white 3,#f48024",
+    stroke:"darkgoldenrod"
   }
 }
 
@@ -96,10 +113,19 @@ let draw = () => {
 }
 
 window.onload = () => {
-  inputs = document.querySelectorAll('input');
+  let inputs = document.querySelectorAll('input');
   inputs.forEach(i => i.onchange = updateConfig)
 
   loadConfig(CONFIGS.default);
+
+  let config = document.querySelector('#config');
+
+  Object.keys(CONFIGS).forEach( c => {
+    let option = document.createElement("option");
+    option.text = c;
+    if (c == "default") option.selected = true;
+    config.add(option);
+  });
 
   makeColorMatrix();
 }
