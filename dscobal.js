@@ -33,21 +33,26 @@ const makeColorMatrix = () => {
 
 const CONFIGS = {
   default: {
-    wvel:0.5,
-    wcx:300,
-    wcy:300,
-    wspokes:20,
+    wvel:0.5, wcx:300, wcy:300, wspokes:20,
     vel:1,
-    lat_lines:16,
-    lon_lines:32,
+    lat_lines:16, lon_lines:32,
     stroke_width:2,
     rrate:0.3,
-    rotx:5,
-    roty:25,
-    rotz:35,
+    rotx:5, roty:25, rotz:35,
     color:"red magenta chartreuse cyan blue",
     wcolors:"2,black 3,green 8,orange 3,green",
     stroke:"darkgoldenrod"
+  },
+  deathstar: {
+    wvel:0.1, wcx:-400, wcy:-400, wspokes:60,
+    vel:1,
+    lat_lines:16, lon_lines:32,
+    stroke_width:4,
+    rrate:0.3,
+    rotx:76, roty:164, rotz:34,
+    color: "gray gray #444",
+    wcolors:"10,black 1,#0f0 30,black 1,#0f0 10,black 1,#f00",
+    stroke:"#666"
   }
 }
 
