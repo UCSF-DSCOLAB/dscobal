@@ -21,7 +21,7 @@
     }
     .control {
       display: flex;
-      padding: 10px;
+      padding: 8px;
       align-items: center;
     }
     .title {
@@ -58,6 +58,7 @@
         <div class="control"><span class="title"> Wheel spokes </span><div class="input"><input id='wspokes' type='number'> </div></div>
         <div class="control"><span class="title"> Wheel x </span><div class="input"><input id='wcx' type='number'> </div></div>
         <div class="control"><span class="title"> Wheel y </span><div class="input"><input id='wcy' type='number'> </div></div>
+        <div class="control"><span class="title"> Load config </span><div class="input"><select onchange="loadConfig(CONFIGS[this.value])" id='config'><option value="default" selected>default</option><option value="deathstar">deathstar</option></select> </div></div>
       </div>
     </div>
   </body>

@@ -60,6 +60,8 @@ let config = {};
 
 const loadConfig = (template) => {
   Object.keys(template).forEach( t => document.querySelector('#'+t).value = template[t]);
+
+  updateConfig();
 }
 
 const updateConfig = () => {
@@ -98,8 +100,6 @@ window.onload = () => {
   inputs.forEach(i => i.onchange = updateConfig)
 
   loadConfig(CONFIGS.default);
-
-  updateConfig();
 
   makeColorMatrix();
 }
