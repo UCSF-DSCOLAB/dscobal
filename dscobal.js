@@ -22,9 +22,8 @@ let colorMatrix = [];
 const getColor = (i,j) => colorMatrix[i] ? colorMatrix[i][j] : 'red';
 
 const makeColorMatrix = () => {
-  let {color, lat_lines, lon_lines, rrate} = readConfig();
+  let {colors, lat_lines, lon_lines, rrate} = readConfig();
 
-  colors = color.split(/\s+/);
   colorMatrix = times(lat_lines)( i => times(lon_lines)( j => 
         random() < rrate || !colorMatrix.length
         ? colors[floor(random() * colors.length)]
@@ -32,20 +31,54 @@ const makeColorMatrix = () => {
   ))
 }
 
-const readConfig = () => {
+const CONFIGS = {
+  default: {
+    wvel:0.5,
+    wcx:300,
+    wcy:300,
+    wspokes:20,
+    vel:1,
+    lat_lines:16,
+    lon_lines:32,
+    stroke_width:2,
+    rrate:0.3,
+    rotx:5,
+    roty:25,
+    rotz:35,
+    color:"red magenta chartreuse cyan blue",
+    wcolors:"2,black 3,green 8,orange 3,green",
+    stroke:"darkgoldenrod"
+  }
+}
+
+let config = {};
+
+const loadConfig = (template) => {
+  Object.keys(template).forEach( t => document.querySelector('#'+t).value = template[t]);
+}
+
+const updateConfig = () => {
   const num = [ 'wvel', 'wcx', 'wcy', 'wspokes', 'vel', 'lat_lines',
     'lon_lines', 'stroke_width', 'rrate', 'rotx', 'roty', 'rotz' ];
   const str = [ 'color', 'wcolors', 'stroke' ];
   const txt = (id) => document.querySelector('#' + id).value;
   const val = (id) => parseFloat(txt(id));
 
-  config = {}
-
   num.forEach(n => config[n] = val(n));
   str.forEach(s => config[s] = txt(s));
 
-  return config;
+  config.wcx = min(1200, max(-400, config.wcx));
+  config.wcy = min(1200, max(-400, config.wcy));
+
+  console.log(JSON.stringify(config));
+
+  config.wheel_colors = config.wcolors.split(/\s+/).map(x => { s = x.split(/\,/); s[0] = parseInt(s[0]); return s;});
+  config.colors = config.color.split(/\s+/);
+  config.spoke_size = config.wheel_colors.reduce( (sum, [width, col]) => sum + width, 0);
+
 }
+
+const readConfig = () => config;
 
 let draw = () => {
   let svg = document.querySelector("#bal");
@@ -55,7 +88,16 @@ let draw = () => {
   drawsphere(svg, config);
 }
 
-window.onload = () => makeColorMatrix();
+window.onload = () => {
+  inputs = document.querySelectorAll('input');
+  inputs.forEach(i => i.onchange = updateConfig)
+
+  loadConfig(CONFIGS.default);
+
+  updateConfig();
+
+  makeColorMatrix();
+}
 
 
 // draw a wheel
@@ -64,19 +106,12 @@ const wheel_radius = 3000;
 
 let wio = 0;
 
-const drawwheel = (svg, {wcx, wcy, wvel, wspokes, wcolors}) => {
+const drawwheel = (svg, {wcx, wcy, wvel, wspokes, spoke_size, wheel_colors}) => {
   const wx = (i) => wheel_radius * cos(2*PI*i/wspokes+wio) + wcx;
   const wy = (i) => wheel_radius * sin(2*PI*i/wspokes+wio) + wcy;
 
-  let wheel_colors;
-
   wio = isNaN(wio) ? 0 : wio + radians(wvel);
 
-  wcx = min(1200, max(-400, wcx));
-  wcy = min(1200, max(-400, wcy));
-  wheel_colors = wcolors.split(/\s+/).map(x => { s = x.split(/\,/); s[0] = parseInt(s[0]); return s;});
-
-  let spoke_size = wheel_colors.reduce( (sum, [width, col]) => sum + width, 0);
   times(wspokes)( i => {
     let w = 0;
     wheel_colors.forEach( ([width, col]) => {
