@@ -34,7 +34,7 @@ const makeColorMatrix = () => {
 const CONFIGS = {
   default: {
     wvel:0.5, wcx:300, wcy:300, wspokes:20,
-    vel:1,
+    vel:-49,
     lat_lines:16, lon_lines:32,
     stroke_width:2,
     rrate:0.3,
