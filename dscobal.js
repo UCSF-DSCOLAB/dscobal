@@ -70,6 +70,23 @@ const CONFIGS = {
     color:"#0d7998 #0f7862 #106452 #11866e #126e5c #17677c #1f88ab #26aae1 #76184f #871d58 #9c2420 #9f2064 #c43388 #cb393a #d96727 #e24c4c #e27a26 #ee6e6f #ef8721 #f79622",
     wcolors:"1,#052049 3,#178ccb 15,white 3,#f48024",
     stroke:"darkgoldenrod"
+  },
+  gold: {
+    wvel:1,
+    wcx:293,
+    wcy:348,
+    wspokes:10,
+    vel:1,
+    lat_lines:20,
+    lon_lines:20,
+    stroke_width:2,
+    rrate:0.3,
+    rotx:-20,
+    roty:-40,
+    rotz:55,
+    color:"gold orange yellow",
+    wcolors:"1,pink 1,white 1,papayawhip",
+    stroke:"darkgoldenrod"
   }
 }
 
