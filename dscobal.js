@@ -14,6 +14,13 @@ let path = (fill, stroke, stroke_width, ...points) => createElement('path',
   { fill, stroke, 'stroke-width': `${stroke_width}px`, d: `M ${points.map(([x,y])=>`${x} ${y}`).join(' ')} Z` }
 );
 
+let text = (txt, x, y, fill, stroke, stroke_width, transform) => {
+  let t = document.createElement('span');
+  t.style = `left: 100px; top: 100px; position: absolute; transform: ${transform}`
+  t.innerHTML = txt;
+  return t;
+}
+
 const times = (n) => (iterator) => Array(n).fill().map((_,i) => iterator(i));
 const radians = (deg) => PI * (deg / 180);
 
@@ -121,12 +128,11 @@ const updateConfig = () => {
 
 const readConfig = () => config;
 
-let draw = () => {
+const draw = () => {
   let svg = document.querySelector("#bal");
   let config = readConfig();
   while( svg.hasChildNodes() ) svg.removeChild(svg.lastChild);
-  drawwheel(svg, config);
-  drawsphere(svg, config);
+  drawtext(svg, config);
 }
 
 window.onload = () => {
@@ -147,6 +153,25 @@ window.onload = () => {
   makeColorMatrix();
 }
 
+// draw orbiting text
+
+let tx = 400;
+let ty = 400;
+
+let rtx = 0;
+let rty = 0;
+let rtz = 0;
+
+const drawtext = (svg,config) => {
+  rtx += 1;
+  rtz += 1;
+  rty += 1;
+  let t = document.querySelector("#textbox");
+  t.innerHTML='';
+  t.appendChild(
+    text('D', 100, 100, 'goldenrod', 'black', 0, `translateZ(500px) rotateX(${rtx}deg) rotateY(${rty}deg) rotateZ(${rtz}deg)`)
+  )
+}
 
 // draw a wheel
 

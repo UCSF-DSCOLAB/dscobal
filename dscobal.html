@@ -10,6 +10,14 @@
   <style>
     #page {
       display: flex;
+      position: relative;
+    }
+    #textbox {
+      position: absolute;
+      left: 0;
+      right: 0;
+      width: 800px;
+      height: 800px;
     }
     #controls {
       flex: 1;
@@ -30,6 +38,10 @@
       padding-right: 10px
     }
 
+    text {
+      font-family: sans-serif;
+    }
+
     input {
       border: 1px solid #ccc;
       padding: 5px;
@@ -42,6 +54,8 @@
     <div id="page">
       <svg id="bal" width="800" height="800">
       </svg>
+      <div id="textbox">
+      </div>
       <div id="controls">
         <div class="control"><span class="title"> RotX </span><div class="input"><input id='rotx' type='number'> </div></div>
         <div class="control"><span class="title"> RotY </span><div class="input"><input id='roty' type='number'> </div></div>
