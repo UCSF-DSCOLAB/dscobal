@@ -111,6 +111,31 @@ const CONFIGS = {
     ttxt: "DSCO DSCO DSCO DSCO DSCO",
     tcol:"hotpink",
     tfont:"120px sans-serif"
+  },
+  earth: {
+    wvel:-0.1,
+    wcx:20,
+    wcy:20,
+    wspokes:50,
+    wcolors:"1,yellow 100,black",
+    vel:1,
+    lat_lines:18,
+    lon_lines:36,
+    stroke_width:1,
+    rrate:0.3,
+    rotx: 67,
+    roty:25,
+    rotz:-20,
+    trotx:80,
+    troty:0,
+    trotz:180,
+    tvel:1.5,
+    texp:25,
+    color:"white white brown green green green blue blue blue blue blue blue blue blue blue",
+    stroke:"blue",
+    ttxt:"DSCO",
+    tcol:"#aaa",
+    tfont:"bold 70px sans-serif"
   }
 }
 
@@ -223,7 +248,9 @@ const drawtext = ({trotx,troty,trotz,tvel,texp}) => {
 
     let p = rz(radians( tz))(ry(radians( ty))(rx(radians( tx))([0, 0, 350])))
 
-    if (p[2] < 0 && dist(p, [0, 0]) < 305) {
+    let fontSize = parseInt(window.getComputedStyle(l.element).getPropertyValue('font-size'));
+
+    if (p[2] < 0 && dist(p, [0, 0]) < 300 + fontSize / 5) {
       l.element.style.display = 'none';
     }
     else
