@@ -131,11 +131,36 @@ const CONFIGS = {
     trotz:180,
     tvel:1.5,
     texp:25,
-    color:"white white brown green green green blue blue blue blue blue blue blue blue blue",
+    color:"white white saddlebrown green green green blue blue blue blue blue blue blue blue blue",
     stroke:"blue",
     ttxt:"DSCO",
     tcol:"#aaa",
     tfont:"bold 70px sans-serif"
+  },
+  classic: {
+    wvel:0.5,
+    wcx:300,
+    wcy:1200,
+    wspokes:6,
+    vel:-49,
+    lat_lines:15,
+    lon_lines:15,
+    stroke_width:1,
+    rrate:1,
+    rotx:70,
+    roty:0,
+    rotz:25,
+    trotx:70,
+    troty:25,
+    trotz:0,
+    tvel:1.5,
+    texp:180,
+    color:"#645845  #625744",
+    wcolors:"1,#948366 7,#484032 1.5,#948366 4,#484032",
+    stroke:"#5b513f",
+    ttxt:"THE DATA-SCIENCE CO-LAB",
+    tcol:"#e5cc9f",
+    tfont:"70px serif"
   }
 }
 
