@@ -7,14 +7,11 @@ const createElement = (type, atts) => {
   return shape;
 }
 
-let stroke = 'darkgoldenrod'
-let stroke_width = 6;
-
-let path = (fill, stroke, stroke_width) => createElement('path',
+const path = (fill, stroke, stroke_width) => createElement('path',
   { fill, stroke, 'stroke-width': `${stroke_width}px`}
 );
 
-let text = (txt, font, col) => {
+const text = (txt, font, col) => {
   let t = document.createElement('span');
   t.style = `left: 400px; top: 400px; font: ${font}; color: ${col}; position: absolute;`
   t.innerHTML = txt;
@@ -161,7 +158,58 @@ const CONFIGS = {
     ttxt:"THE DATA-SCIENCE CO-LAB",
     tcol:"#e5cc9f",
     tfont:"70px serif"
-  }
+  },
+  halloween:{
+    wvel:0.5,
+    wcx:750,
+    wcy:200,
+    wspokes:16,
+    vel:1,
+    lat_lines:15,
+    lon_lines:15,
+    stroke_width:0,
+    rrate:0.3,
+    rotx:100,
+    roty:190,
+    rotz:25,
+    trotx:70,
+    troty:-25,
+    trotz:0,
+    tvel:1.5,
+    texp:333,
+    color:"orange orange #f70 #f90 darkorange \
+    [4,4]black\
+    [5,3]black,black,black,#404\
+    [5,4]black,black,black,#404\
+    [4,7]black\
+    [5,6]black,black,black,#404\
+    [5,7]black,black,black,#404\
+    [7,2]black,#111\
+    [7,4]black,#111\
+    [7,5]black,#111\
+    [7,7]black,#111\
+    [7,8]black,#111\
+    [8,3]black,#111\
+    [8,4]black,#111\
+    [8,5]black,yellow,red\
+    [8,6]black,#111\
+    [8,7]black,#111\
+    [8,8]black,#111\
+    [9,3]black,#111\
+    [9,4]black,yellow,red\
+    [9,5]black,yellow,red\
+    [9,6]black,#111\
+    [9,7]black,#111\
+    [10,4]black,#111\
+    [10,5]black,yellow,red\
+    [10,7]black,#111\
+    orange",
+    wcolors:"1,gray 50,black",
+    stroke:"#5b513f",
+    ttxt:"D🦇S🧛C😱O💀L🧟A👻B👹",
+    tcol:"purple",
+    tfont:"bold 90px serif"
+  } 
 }
 
 let config = {};
@@ -173,6 +221,8 @@ const loadConfig = (template) => {
 
   updateConfig();
 }
+
+const COLOR_POS_MATCH=/^\[(\d+),(\d+)\](.*)/;
 
 const updateConfig = () => {
   const num = [ 'wvel', 'wcx', 'wcy', 'wspokes', 'vel', 'lat_lines',
@@ -187,11 +237,20 @@ const updateConfig = () => {
   config.wcx = min(1200, max(-400, config.wcx));
   config.wcy = min(1200, max(-400, config.wcy));
 
-  console.log(JSON.stringify(config));
-
   config.wheel_colors = config.wcolors.split(/\s+/).map(x => { s = x.split(/\,/); s[0] = parseInt(s[0]); return s;});
-  config.colors = config.color.split(/\s+/);
+  config.colors = config.color.split(/\s+/).filter(s => !s.match(COLOR_POS_MATCH));
+
+  pos = [];
+  config.color.split(/\s+/).filter(s => s.match(COLOR_POS_MATCH)).forEach( fixed_color => {
+    [ _, i, j, color ] = fixed_color.match(COLOR_POS_MATCH);
+    pos[i] = pos[i] || [];
+    pos[i][j] = color.split(/,/);
+  });
+  config.fixed_color_pos = pos;
+
   config.spoke_size = config.wheel_colors.reduce( (sum, [width, col]) => sum + width, 0);
+
+  console.log(JSON.stringify(config));
 
   let svg = document.querySelector("#bal");
   while( svg.hasChildNodes() ) svg.removeChild(svg.lastChild);
@@ -202,6 +261,18 @@ const updateConfig = () => {
 }
 
 const readConfig = () => config;
+
+const toggleControls = (hide) => {
+  let show = document.querySelector("#showcontrols");
+  let controls = document.querySelector("#controls");
+  if (hide) {
+    show.style.display = "block";
+    controls.style.display = "none";
+  } else {
+    show.style.display = "none";
+    controls.style.display = "flex";
+  }
+};
 
 const draw = () => {
   let svg = document.querySelector("#bal");
@@ -215,14 +286,18 @@ window.onload = () => {
   let inputs = document.querySelectorAll('input');
   inputs.forEach(i => i.onchange = updateConfig)
 
-  loadConfig(CONFIGS.default);
+  let selected = window.location.hash.slice(1);
+
+  selected = selected in CONFIGS ? selected : 'default';
+
+  loadConfig(CONFIGS[selected]);
 
   let config = document.querySelector('#config');
 
   Object.keys(CONFIGS).forEach( c => {
     let option = document.createElement("option");
     option.text = c;
-    if (c == "default") option.selected = true;
+    if (c == selected) option.selected = true;
     config.add(option);
   });
 }
@@ -240,7 +315,7 @@ const makeLetters = () => {
 
   let { ttxt, tfont, tcol } = readConfig();
 
-  letters = ttxt.split('').map( (l,i) => {
+  letters = [...ttxt].map( (l,i) => {
     let node = {}
 
     node.letter = l;
@@ -344,10 +419,10 @@ const drawwheel = ({wcx, wcy, wvel, wspokes, spoke_size, wheel_colors}) => {
 
 let sphere_elements = [];
 
-const getColor = (color, colors, rrate) => random() < rrate ? colors[floor(random() * colors.length)] : (color || 'red');
+const getColor = (color, colors, rrate) => (!color || random() < rrate) ? colors[floor(random() * colors.length)] : color;
 
 const updateSphereColors = () => {
-  let {colors, lat_lines, lon_lines, rrate} = readConfig();
+  let {colors, fixed_color_pos, lat_lines, lon_lines, rrate} = readConfig();
 
   times(lat_lines)( i => times(lon_lines)( j => {
     // SphereElements was set, so we can assume the node exists
@@ -357,19 +432,22 @@ const updateSphereColors = () => {
 
     if (!node) return;
 
-    sphere_elements[i][j].color = getColor(node.color, colors, rrate);
+    let fixed_colors = fixed_color_pos[i] ? fixed_color_pos[i][j] : null;
+
+    sphere_elements[i][j].color = getColor(node.color, fixed_colors || colors, rrate);
   }))
 }
 
 const makeSphereElements = (svg) => {
   console.log("Making sphere_elements");
-  let {colors, stroke, stroke_width, lat_lines, lon_lines, rrate} = readConfig();
+  let {colors, fixed_color_pos, stroke, stroke_width, lat_lines, lon_lines, rrate} = readConfig();
 
   sphere_elements = times(lat_lines)( i => times(lon_lines)( j => {
     let node = sphere_elements[i] && sphere_elements[i][j] ? sphere_elements[i][j] : {}
 
+    let fixed_colors = fixed_color_pos[i] ? fixed_color_pos[i][j] : null;
     // we may use the old color to "blur" transitions between dscobals
-    node.color = getColor(node.color, colors, rrate);
+    node.color = getColor(node.color, fixed_colors || colors, rrate);
 
     node.i = i;
     node.j = j;

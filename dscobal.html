@@ -8,9 +8,30 @@
   <script src="dscobal.js"></script>
 
   <style>
+    body {
+      margin: 0;
+    }
     #page {
       display: flex;
       position: relative;
+    }
+    #showcontrols {
+      position: absolute;
+      z-index: 1000;
+      color: white;
+      font: bold 40px monospace;
+      right: 0;
+      cursor: pointer;
+      display: none;
+    }
+    #hidecontrols {
+      position: absolute;
+      z-index: 1000;
+      color: black;
+      font: bold 40px monospace;
+      left: 10;
+      top: 0;
+      cursor: pointer;
     }
     #textbox {
       position: absolute;
@@ -20,6 +41,10 @@
       height: 800px;
     }
     #controls {
+      position: absolute;
+      background: white;
+      right: 0;
+      width: 50%;
       flex: 1;
       display: flex;
       flex-direction: column;
@@ -55,11 +80,13 @@
 
   <body>
     <div id="page">
-      <svg id="bal" width="800" height="800">
+      <svg id="bal" width="100%" height="800">
       </svg>
       <div id="textbox">
       </div>
+      <div id="showcontrols" onclick="toggleControls(false)">&laquo;</div>
       <div id="controls">
+        <div id="hidecontrols" onclick="toggleControls(true)">&raquo;</div>
         <div class="control"><span class="title"> RotX </span><div class="input"><input id='rotx' type='number'> </div></div>
         <div class="control"><span class="title"> RotY </span><div class="input"><input id='roty' type='number'> </div></div>
         <div class="control"><span class="title"> RotZ </span><div class="input"><input id='rotz' type='number'> </div></div>
