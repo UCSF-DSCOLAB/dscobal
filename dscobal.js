@@ -209,7 +209,32 @@ const CONFIGS = {
     ttxt:"D🦇S🧛C😱O💀L🧟A👻B👹",
     tcol:"purple",
     tfont:"bold 90px serif"
-  } 
+  },
+  tech: {
+    wvel:-0.1,
+    wcx:300,
+    wcy:300,
+    wspokes:2,
+    vel:1,
+    lat_lines:12,
+    lon_lines:12,
+    stroke_width:1,
+    rrate:0.3,
+    rotx:35,
+    roty:25,
+    rotz:-20,
+    trotx:80,
+    troty:0,
+    trotz:180,
+    tvel:1.5,
+    texp:50,
+    color:"#222 black",
+    wcolors:"1,#0f0 50,black 1,#0f0 100,black",
+    stroke:"blue",
+    ttxt:"dscolab",
+    tcol:"white",
+    tfont:"bold 70px monospace"
+  }
 }
 
 let config = {};
