@@ -23,7 +23,7 @@ const radians = (deg) => PI * (deg / 180);
 
 const CONFIGS = {
   default: {
-    wvel:0.5, wcx:300, wcy:300, wspokes:20,
+    wvel:0.5, wcx:300, wcy:300, wspokes:20, wturb:0,
     vel:1,
     trotx: 35,
     troty: 25,
@@ -234,6 +234,32 @@ const CONFIGS = {
     ttxt:"dscolab",
     tcol:"white",
     tfont:"bold 70px monospace"
+  },
+  beach: {
+    wvel:0.1,
+    wcx:1200,
+    wcy:-400,
+    wspokes:60,
+    wturb:0.015,
+    vel:1,
+    lat_lines:44,
+    lon_lines:44,
+    stroke_width:0,
+    rrate:0.02,
+    rotx:71,
+    roty:12,
+    rotz:120,
+    trotx:-104,
+    troty:164,
+    trotz:34,
+    tvel:1,
+    texp:190,
+    color:"#e9c29c #deab83 #e9c096 #e6bd9c #e5aa75 #d2a680 #e0b68f #dbb190 #e4ba8b #e7b68b #dc9f62 #eaba89 #e2b38b #e4a969 #dba679",
+    wcolors:"1,white 10,#40cee9 10,#35c2e6",
+    stroke:"#440",
+    ttxt:"dscolab",
+    tcol:"#F5EBDA",
+    tfont:"italic 140px serif"
   }
 }
 
@@ -250,7 +276,7 @@ const loadConfig = (template) => {
 const COLOR_POS_MATCH=/^\[(\d+),(\d+)\](.*)/;
 
 const updateConfig = () => {
-  const num = [ 'wvel', 'wcx', 'wcy', 'wspokes', 'vel', 'lat_lines',
+  const num = [ 'wvel', 'wcx', 'wcy', 'wspokes', 'wturb', 'vel', 'lat_lines',
     'lon_lines', 'stroke_width', 'rrate', 'rotx', 'roty', 'rotz', 'trotx', 'troty', 'trotz', 'tvel', 'texp' ];
   const str = [ 'color', 'wcolors', 'stroke', 'ttxt', 'tcol', 'tfont' ];
   const txt = (id) => document.querySelector('#' + id).value;
@@ -395,8 +421,33 @@ let wheel_elements = [];
 
 const makeWheelElements = (svg) => {
   console.log("Making wheel_elements");
-  let {wcx, wcy, wvel, wspokes, spoke_size, wheel_colors} = readConfig();
+  let {wcx, wcy, wvel, wspokes, wturb, spoke_size, wheel_colors} = readConfig();
 
+
+  let filter = createElement('filter', {
+    id: 'displace'
+  });
+
+  let turbulence = createElement('feTurbulence', {
+    type:"turbulence",
+    baseFrequency: wturb,
+    numOctaves:"2",
+    result:"turbulence"
+  });
+
+  let displace = createElement('feDisplacementMap', {
+      in2:"turbulence",
+      in:"SourceGraphic",
+      scale:"50",
+      xChannelSelector:"R",
+      yChannelSelector:"G" 
+  });
+  filter.appendChild(turbulence);
+  filter.appendChild(displace);
+
+  let group = createElement('g', { filter: 'url(#displace)' });
+  svg.appendChild(filter);
+  svg.appendChild(group);
   wheel_elements = times(wspokes)( i => times(wheel_colors.length)( j => {
     let node = wheel_elements[i] && wheel_elements[i][j] ? wheel_elements[i][j] : {};
 
@@ -404,7 +455,7 @@ const makeWheelElements = (svg) => {
     node.color = wheel_colors[j][1];
     node.element = path(node.color, 'none', 0);
 
-    svg.appendChild(node.element);
+    group.appendChild(node.element);
 
     return node;
   }));
