@@ -260,6 +260,47 @@ const CONFIGS = {
     ttxt:"dscolab",
     tcol:"#F5EBDA",
     tfont:"italic 140px serif"
+  },
+  xmas: {
+    wvel:-0.1,
+    wcx:300,
+    wcy:300,
+    wspokes:70,
+    wturb:0.2,
+    vel:1,
+    lat_lines:15,
+    lon_lines:15,
+    stroke_width:0,
+    rrate:2.2,
+    rotx:90,
+    roty:25,
+    rotz:-20,
+    trotx:80,
+    troty:-40,
+    trotz:180,
+    tvel:1.5,
+    texp:270,
+    color:"red #f22 #f11 #f33 \
+    [00,02]white [00,04]green [00,07]white [00,09]green [00,12]white [00,14]green \
+    [01,01]white [01,03]green [01,06]white [01,08]green [01,11]white [01,13]green \
+    [02,01]white [02,03]green [02,06]white [02,08]green [02,11]white [02,13]green \
+    [03,00]white [03,02]green [03,05]white [03,07]green [03,10]white [03,12]green \
+    [04,00]white [04,02]green [04,05]white [04,07]green [04,10]white [04,12]green \
+    [05,14]white [05,01]green [05,04]white [05,06]green [05,09]white [05,11]green \
+    [06,14]white [06,01]green [06,04]white [06,06]green [06,09]white [06,11]green \
+    [07,13]white [07,00]green [07,03]white [07,05]green [07,08]white [07,10]green \
+    [08,13]white [08,00]green [08,03]white [08,05]green [08,08]white [08,10]green \
+    [09,12]white [09,14]green [09,02]white [09,04]green [09,07]white [09,09]green \
+    [10,12]white [10,14]green [10,02]white [10,04]green [10,07]white [10,09]green \
+    [11,11]white [11,13]green [11,01]white [11,03]green [11,06]white [11,08]green \
+    [12,11]white [12,13]green [12,01]white [12,03]green [12,06]white [12,08]green \
+    [13,10]white [13,12]green [13,00]white [13,02]green [13,05]white [13,07]green \
+    [14,10]white [14,12]green [14,00]white [14,02]green [14,05]white [14,07]green",
+    wcolors:"1,blue 1,white 2,blue 2,white 1,blue 1,white",
+    stroke:"goldenrod",
+    ttxt:"🎅🦌🦌🦌🦌🦌                dscolab",
+    tcol:"goldenrod",
+    tfont:"italic 90px serif"
   }
 }
 
@@ -273,7 +314,7 @@ const loadConfig = (template) => {
   updateConfig();
 }
 
-const COLOR_POS_MATCH=/^\[(\d+),(\d+)\](.*)/;
+const COLOR_POS_MATCH=/^\[(\d+),(\*?)(\d+)\](.*)/;
 
 const updateConfig = () => {
   const num = [ 'wvel', 'wcx', 'wcy', 'wspokes', 'wturb', 'vel', 'lat_lines',
@@ -293,9 +334,17 @@ const updateConfig = () => {
 
   pos = [];
   config.color.split(/\s+/).filter(s => s.match(COLOR_POS_MATCH)).forEach( fixed_color => {
-    [ _, i, j, color ] = fixed_color.match(COLOR_POS_MATCH);
+    [ _, i, star, j, color ] = fixed_color.match(COLOR_POS_MATCH);
+    i = parseInt(i);
+    j = parseInt(j);
     pos[i] = pos[i] || [];
+
     pos[i][j] = color.split(/,/);
+    if (star == '*') {
+      for (let k = 0; k < j; k++) {
+        pos[i][k] = color.split(/,/);
+      }
+    }
   });
   config.fixed_color_pos = pos;
 
